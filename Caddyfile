@@ -1,0 +1,39 @@
+{
+	admin off
+	persist_config off
+	auto_https off
+
+	log {
+		format json
+	}
+
+	servers {
+      trusted_proxies static private_ranges
+    }
+}
+
+:{$PORT:80} {
+  log
+
+  handle /health {
+    respond 200
+  }
+
+  handle /static/* {
+    reverse_proxy https://{$POSTHOG_ASSETS_HOST}:443 {
+      header_up Host {$POSTHOG_ASSETS_HOST}
+      header_down -Access-Control-Allow-Origin
+    }
+  }
+
+  handle {
+    reverse_proxy https://{$POSTHOG_API_HOST}:443 {
+      header_up Host {$POSTHOG_API_HOST}
+      header_down -Access-Control-Allow-Origin
+    }
+  }
+
+  handle_errors {
+  	respond "" {err.status_code}
+  }
+}

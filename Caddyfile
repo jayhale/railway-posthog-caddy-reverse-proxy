@@ -8,32 +8,44 @@
 	}
 
 	servers {
-      trusted_proxies static private_ranges
-    }
+		trusted_proxies static private_ranges
+	}
 }
 
 :{$PORT:80} {
-  log
+	log
 
-  handle /health {
-    respond 200
-  }
+	# Handle CORS to support the PostHog toolbar
+	@allowed_origin {
+		expression `{$ALLOWED_ORIGIN_REGEX}` != ""
+		header_regexp Origin {$ALLOWED_ORIGIN_REGEX}
+	}
+	header @allowed_origin {
+		Access-Control-Allow-Origin {header.Origin}
+		Access-Control-Allow-Credentials true
+		Vary Origin
+	}
 
-  handle /static/* {
-    reverse_proxy https://{$POSTHOG_ASSETS_HOST}:443 {
-      header_up Host {$POSTHOG_ASSETS_HOST}
-      header_down -Access-Control-Allow-Origin
-    }
-  }
+	# Healthcheck endpoint
+	handle /health {
+		respond 200
+	}
 
-  handle {
-    reverse_proxy https://{$POSTHOG_API_HOST}:443 {
-      header_up Host {$POSTHOG_API_HOST}
-      header_down -Access-Control-Allow-Origin
-    }
-  }
+	# Pass the rest through to PostHog
+	handle /static/* {
+		reverse_proxy https://{$POSTHOG_ASSETS_HOST}:443 {
+			header_up Host {$POSTHOG_ASSETS_HOST}
+			header_down -Access-Control-Allow-Origin
+		}
+	}
+	handle {
+		reverse_proxy https://{$POSTHOG_API_HOST}:443 {
+			header_up Host {$POSTHOG_API_HOST}
+			header_down -Access-Control-Allow-Origin
+		}
+	}
 
-  handle_errors {
-  	respond "" {err.status_code}
-  }
+	handle_errors {
+		respond "" {err.status_code}
+	}
 }

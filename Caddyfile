@@ -16,10 +16,7 @@
 	log
 
 	# Handle CORS to support the PostHog toolbar
-	@allowed_origin {
-		expression `{$ALLOWED_ORIGIN_REGEX}` != ""
-		header_regexp Origin {$ALLOWED_ORIGIN_REGEX}
-	}
+	@allowed_origin header_regexp Origin {$ALLOWED_ORIGIN_REGEX:^$}
 	header @allowed_origin {
 		Access-Control-Allow-Origin {header.Origin}
 		Access-Control-Allow-Credentials true

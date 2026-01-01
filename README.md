@@ -9,16 +9,40 @@ This template gives you a fully-configured Caddy proxy for PostHog in 20 seconds
 
 ### Set your domain
 
-Out of the box, you'll get a Railway subdomain (see below), you'll likely want to change this to your own domain.
+Out of the box, you'll get a Railway subdomain.
+You'll likely want to change this to your own domain.
 See the Railway docs for how to [change your domain](https://docs.railway.com/guides/public-networking#custom-domains).
 
 ### Set PostHog hosts (EU users only)
 
 For EU users, you'll also need to update two variables, `POSTHOG_API_HOST` and `POSTHOG_ASSETS_HOST`, to point to PostHog's EU endpoints.
 
-```
+```sh
 POSTHOG_API_HOST="eu.i.posthog.com"
 POSTHOG_ASSETS_HOST="eu-assets.i.posthog.com"
+```
+
+### Set allowed origins for the PostHog toolbar (optional)
+
+To allow your browser to load the PostHog toolbar on your side, set the `ALLOWED_ORIGIN_REGEX` variable.
+This configures the proxy to add `Access-Control-Allow-Origin` headers to responses that come from origins matching your regex.
+```sh
+# Match exactly one domain
+ALLOWED_ORIGIN_REGEX="^https?:\/\/my-domain\.com$"
+
+# Match only subdomains
+ALLOWED_ORIGIN_REGEX="^https?:\/\/.*\.my-domain\.com$"
+
+# Match subdomains and the root domain
+ALLOWED_ORIGIN_REGEX="^https?:\/\/.*my-domain\.com$"
+```
+
+You should **always** terminate this regex with a `$` to avoid matching potentially malicious origins (such as `https://my-domain.com.evil.com`):
+
+```shell
+# Never do this!
+ALLOWED_ORIGIN_REGEX="^https?:\/\/.*my-domain\.com"
+#                              Missing `$` -------^
 ```
 
 ## Why

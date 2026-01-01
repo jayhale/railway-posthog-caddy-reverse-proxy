@@ -16,6 +16,11 @@
 	log
 
 	# Handle CORS to support the PostHog toolbar
+	# If ALLOWED_ORIGIN_REGEX is not set, these headers are skipped. I.e., the
+	# default regex of `^$` matches only empty strings, which will fail for any
+	# non-empty Origin header.
+	# If ALLOW_ORIGIN_REGEX is set, apply `Access-Control-*` headers for the
+	# request origin only.
 	@allowed_origin header_regexp Origin {$ALLOWED_ORIGIN_REGEX:^$}
 	header @allowed_origin {
 		Access-Control-Allow-Origin {header.Origin}

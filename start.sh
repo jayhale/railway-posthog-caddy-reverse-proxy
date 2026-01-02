@@ -1,3 +1,4 @@
+#!/bin/sh
 set -e
 
 # Run checks (will warn on unexpected configuration)

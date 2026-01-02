@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 warn() {
     echo "WARNING: $1" >&2

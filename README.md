@@ -3,7 +3,7 @@
 PostHog works best with a [reverse proxy](https://posthog.com/docs/advanced/proxy/caddy).
 This template gives you a fully-configured Caddy proxy for PostHog in 20 seconds or less (probably).
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/xxKDnH?referralCode=fJi8gp)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/posthog-caddy-reverse-proxy?referralCode=fJi8gp)
 
 ## Configuration
 
